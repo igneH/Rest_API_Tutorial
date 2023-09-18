@@ -6,7 +6,7 @@ using Rest_API_Tutorial.Entities;
 
 namespace Rest_API_Tutorial.Repositories
 {
-    public class InMemItemsRepository
+    public class InMemItemsRepository : IItemsRepository
     {
         private readonly List<Item> items = new()
         {
@@ -15,7 +15,7 @@ namespace Rest_API_Tutorial.Repositories
             new Item { Id = Guid.NewGuid(), Name = "Bronze Shield", Price = 16, CreatedTime = DateTimeOffset.UtcNow }
         };
 
-        public IEnumerable<Item> GetItmes()
+        public IEnumerable<Item> GetItems()
         {
             return items;
         }

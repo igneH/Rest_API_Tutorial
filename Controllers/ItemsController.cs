@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Rest_API_Tutorial.Entities;
 using Rest_API_Tutorial.Repositories;
 using System.Collections.Generic;
+using System.Linq;
+using Rest_API_Tutorial.Dtos;
 
 namespace Rest_API_Tutorial.Controllers
 {
@@ -10,28 +12,34 @@ namespace Rest_API_Tutorial.Controllers
     [Route("items")]
     public class ItemsController : ControllerBase
     {
-        private readonly InMemItemsRepository _repository;
+        private readonly IItemsRepository repository;
 
-        public ItemsController()
+        public ItemsController(IItemsRepository repository)
         {
-            _repository = new InMemItemsRepository();
+            this.repository = repository;
         }
 
         //GET /items
         [HttpGet]
-        public IEnumerable<Item> GetItems()
+        public IEnumerable<ItemDto> GetItems()
         {
-            var items = _repository.GetItmes();
+            var items = repository.GetItems().Select(item => item.AsDto());
+
             return items;
         }
 
         //GET /items/{id}
         [HttpGet("{id}")]
-        public ActionResult<Item> GetItem(Guid id)
+        public ActionResult<ItemDto> GetItem(Guid id)
         {
-            var item = _repository.GetItem(id);
+            var item = repository.GetItem(id);
 
-            return item == null ? NotFound() : item;
+            if (item is null)
+            {
+                return NotFound();
+            }
+
+            return item.AsDto();
         }
     }
 }

@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Rest_API_Tutorial.Repositories;
 
 namespace Rest_API_Tutorial
 {
@@ -26,6 +27,8 @@ namespace Rest_API_Tutorial
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<IItemsRepository, InMemItemsRepository>();
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
