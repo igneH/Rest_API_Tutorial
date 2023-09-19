@@ -41,5 +41,60 @@ namespace Rest_API_Tutorial.Controllers
 
             return item.AsDto();
         }
+
+        //POST /items
+        [HttpPost]
+        public ActionResult<ItemDto> CreateItem(CreateItemDto itemDto)
+        {
+            Item item = new()
+            {
+                Id = Guid.NewGuid(),
+                Name = itemDto.Name,
+                Price = itemDto.Price,
+                CreatedTime = DateTimeOffset.UtcNow
+            };
+            
+            repository.CreateItem(item);
+
+            return CreatedAtAction(nameof(GetItem), new { id = item.Id }, item.AsDto());
+        }
+
+        //PUT /items/{id}
+        [HttpPut("id")]
+        public ActionResult UpdateItem(Guid id, UpdateItemDto itemDto)
+        {
+            var exitingItem = repository.GetItem(id);
+
+            if (exitingItem is null)
+            {
+                return NotFound();
+            }
+
+            Item updatedItem = exitingItem with
+            {
+                Name = itemDto.Name,
+                Price = itemDto.Price
+            };
+
+            repository.UpdateItem(updatedItem);
+
+            return NoContent();
+        }
+
+        //DELETE /item/{id}
+        [HttpDelete("{id}")]
+        public ActionResult DeleteItem(Guid id)
+        {
+            var exitingItem = repository.GetItem(id);
+
+            if (exitingItem is null)
+            {
+                return NotFound();
+            }
+
+            repository.DeleteItem(id);
+
+            return NoContent();
+        }
     }
 }
